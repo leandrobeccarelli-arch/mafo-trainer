@@ -53,7 +53,7 @@ footer{color:var(--muted);font-size:13px}
 <div class="track" aria-hidden="true"><i id="bar"></i></div>
 <div class="controls">
 <div class="seg" role="group" aria-label="Modus">
-<button id="m-cards" aria-pressed="true">Karteikarten</button><button id="m-quiz" aria-pressed="false">Quiz</button></div>
+<button id="m-cards" aria-pressed="true">Karteikarten</button><button id="m-quiz" aria-pressed="false">Quiz</button><button id="m-phasen" aria-pressed="false">6 Phasen</button></div>
 <label class="hint" for="kap" hidden>Kapitel</label><select id="kap" aria-label="Kapitel"></select>
 </div>
 
@@ -72,6 +72,12 @@ footer{color:var(--muted);font-size:13px}
 <p class="hint" id="qs"></p>
 </section>
 
+<section id="v-phasen" class="card" hidden aria-live="polite">
+<div class="eyebrow">Der Marktforschungsprozess</div>
+<div class="row"><button id="p-ord" class="primary">Reihenfolge legen</button><button id="p-zu">Stichworte zuordnen</button></div>
+<div id="p-area" style="display:grid;gap:10px"></div>
+<p class="hint" id="p-msg"></p>
+</section>
 <footer>Zusammengefasst aus dem Kursskript Marktforschung (MVF). Lernhilfe, kein Ersatz für das Skript.</footer>
 </div>
 <script>
@@ -116,9 +122,38 @@ if(x.a===d.a){score++;b.classList.add("right");if(!st[d.i])st[d.i]="ok"}else{b.c
 [...$("opts").children].forEach((c,j)=>{if(opts[j].a===d.a)c.classList.add("right")})}
 save();stats();$("qs").textContent=`Frage ${qi+1} von ${qd.length} · ${score} richtig`;$("next").hidden=false;$("next").focus()};$("opts").appendChild(b)})}
 $("next").onclick=()=>{qi++;showQ()};
-const modes=["cards","quiz"];
+
+const P=[["Problem formulieren",["«Was will ich wissen?»","Untersuchungsziel definieren","Untersuchungsgegenstände (z.B. Marktanteile)"]],
+["Checkphase",["Bestimmung der Informationsquellen","Was ist vorhanden (sekundär)?","Was muss ermittelt werden (primär)?","Entscheid zur Primärforschung"]],
+["Designphase",["Methode festlegen","Grundgesamtheit festlegen","Stichprobe und Auswahlverfahren","Entscheid MAFO-Institut","Timing und Budget bestimmen","Programmfragen definieren"]],
+["Feldphase – Datengewinn",["Fragebogen erstellen","Interviewer-Auswahl","Interviewer-Schulung","Pilot (Probeinterviews)","Durchführung im Feld"]],
+["Datenanalyse, Aufbereitung, Interpretation",["Fragebogen auswerten","Tabellen erstellen","Statistische Verfahren","Grafische Darstellungen","Schlussfolgerungen und Empfehlungen"]],
+["Dokumentationsphase, Kommunikation, Umsetzung",["Schriftlicher Forschungsbericht","Präsentation / Workshop","Umsetzung Massnahmen"]]];
+let pMode="ord";
+function phOrd(){pMode="ord";$("p-ord").classList.add("primary");$("p-zu").classList.remove("primary");
+let next=0,err=0;const area=$("p-area");area.innerHTML='<ol id="p-done" style="margin:0;padding-left:22px;display:grid;gap:4px"></ol><div id="p-pool" class="row"></div>';
+$("p-msg").textContent="Klicke die Phasen in der richtigen Reihenfolge an.";
+sh(P.map((x,i)=>i)).forEach(i=>{const b=document.createElement("button");b.textContent=P[i][0];
+b.onclick=()=>{if(i===next){b.remove();const li=document.createElement("li");li.textContent=P[i][0];$("p-done").appendChild(li);next++;
+if(next===6){$("p-msg").textContent=err?`Fertig. ${err} Fehlversuch${err>1?"e":""}. Nochmals?`:"Perfekt, alles richtig.";
+const r=document.createElement("button");r.className="primary";r.textContent="Nochmals";r.onclick=phOrd;$("p-pool").appendChild(r)}
+else $("p-msg").textContent=`Richtig. Phase ${next+1}?`}
+else{err++;b.classList.add("miss");setTimeout(()=>b.classList.remove("miss"),500);$("p-msg").textContent=`Nicht Phase ${next+1}. Versuch es nochmals.`}};
+$("p-pool").appendChild(b)})}
+let zq=[],zi=0,zs=0;
+function phZu(){pMode="zu";$("p-zu").classList.add("primary");$("p-ord").classList.remove("primary");
+zq=sh(P.flatMap((x,i)=>x[1].map(s=>[s,i]))).slice(0,10);zi=0;zs=0;zShow()}
+function zShow(){const area=$("p-area");
+if(zi>=zq.length){area.innerHTML="";$("p-msg").textContent=`${zs} von ${zq.length} richtig zugeordnet.`;
+const r=document.createElement("button");r.className="primary";r.textContent="Neue Runde";r.onclick=phZu;area.appendChild(r);return}
+const [s,c]=zq[zi];area.innerHTML=`<p class="q">${s}</p>`;$("p-msg").textContent=`Stichwort ${zi+1} von ${zq.length} · ${zs} richtig. In welche Phase gehört es?`;
+const btns=P.map((x,i)=>{const b=document.createElement("button");b.className="opt";b.textContent=(i+1)+". "+x[0];
+b.onclick=()=>{if(area.dataset.done==="1")return;area.dataset.done="1";if(i===c){zs++;b.classList.add("right")}else{b.classList.add("wrong");btns[c].classList.add("right")}
+const n=document.createElement("button");n.className="primary";n.textContent="Weiter";n.onclick=()=>{zi++;area.dataset.done="";zShow()};area.appendChild(n);n.focus()};area.appendChild(b);return b})}
+$("p-ord").onclick=phOrd;$("p-zu").onclick=phZu;
+const modes=["cards","quiz","phasen"];
 function setMode(m){modes.forEach(x=>{$("v-"+x).hidden=x!==m;$("m-"+x).setAttribute("aria-pressed",x===m)});
-$("cardTools").hidden=m!=="cards";if(m==="quiz")newQuiz()}
+$("cardTools").hidden=m!=="cards";$("kap").hidden=m==="phasen";if(m==="quiz")newQuiz();if(m==="phasen"){pMode==="zu"?phZu():phOrd()}}
 modes.forEach(m=>$("m-"+m).onclick=()=>setMode(m));
 $("kap").onchange=()=>{newDeck();if(!$("v-quiz").hidden)newQuiz()};
 newDeck();
