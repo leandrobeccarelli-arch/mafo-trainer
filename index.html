@@ -64,6 +64,7 @@ input[type=text]:focus{outline:2px solid var(--accent);outline-offset:1px}
 input.right{border-color:var(--ok);background:var(--ok-bg)}input.wrong{border-color:var(--bad);background:var(--bad-bg)}
 .fld .fix{grid-column:1/-1;font-size:13px;color:var(--bad);margin:-2px 0 4px;text-align:right}
 .sel{padding:9px 14px;background:var(--bg);color:var(--fg)}.sel[aria-pressed=true]{background:var(--accent);color:var(--accent-fg)}
+#r-card .sel.right{background:var(--ok-bg);border-color:var(--ok);color:var(--fg)}#r-card .sel.wrong{background:var(--bad-bg);border-color:var(--bad);color:var(--fg)}
 textarea{font:400 15px/1.5 var(--font);width:100%;min-height:92px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--bg);color:var(--fg);resize:vertical}
 .part{border-top:1px solid var(--line);padding-top:14px;display:grid;gap:10px}
 .part>b{font-size:16px}
@@ -199,7 +200,7 @@ F.append(w)});c.append(F);let done=false;
 const go=btn("Prüfen","primary",check);c.append(go);const first=ins.find(x=>!Array.isArray(x));if(first)first.focus();
 keyH=e=>{if(e.key==="Enter"&&!done){e.preventDefault();check()}};
 function check(){if(done)return;done=true;let all=true;
-d.f.forEach((f,k)=>{let ok;if(f.opts){ok=f.v===f.c;ins[k].forEach((b,j)=>{b.disabled=true;if(j===f.c)b.classList.add("right");else if(j===f.v)b.classList.add("wrong")})}
+d.f.forEach((f,k)=>{let ok;if(f.opts){ok=f.v===f.c;ins[k].forEach((b,j)=>{b.disabled=true;if(j===f.c)b.classList.add("right");else if(j===f.v)b.classList.add("wrong")});if(!ok)ins[k][0].parentNode.after(el("div","fix","Richtig: "+f.opts[f.c]))}
 else{const v=num(ins[k].value);ok=!isNaN(v)&&Math.abs(v-Math.abs(f.a))<=f.tol;ins[k].readOnly=true;ins[k].classList.add(ok?"right":"wrong");
 if(!ok){const x=el("div","fix",`Richtig: ${N(f.a,f.dp==null?1:f.dp)} ${f.u}`);ins[k].parentNode.after(x)}}
 if(!ok)all=false});
