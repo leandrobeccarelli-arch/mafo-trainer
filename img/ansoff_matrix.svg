@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 500" font-family="Arial, Helvetica, sans-serif">
+<rect width="600" height="500" fill="#33475b"/>
+<text x="300" y="46" fill="#fff" font-size="26" font-weight="bold" text-anchor="middle">Ansoff-Matrix</text>
+<rect x="116" y="72" width="444" height="34" fill="#00bda5"/><text x="338" y="96" fill="#fff" font-size="20" font-weight="bold" text-anchor="middle">Markt</text>
+<rect x="116" y="110" width="220" height="34" fill="#00bda5"/><text x="226" y="134" fill="#fff" font-size="19" font-weight="bold" text-anchor="middle">Bestehend</text>
+<rect x="340" y="110" width="220" height="34" fill="#00bda5"/><text x="450" y="134" fill="#fff" font-size="19" font-weight="bold" text-anchor="middle">Neu</text>
+<rect x="40" y="148" width="34" height="286" fill="#00bda5"/><text transform="translate(64 291) rotate(-90)" fill="#fff" font-size="20" font-weight="bold" text-anchor="middle">Produkt</text>
+<rect x="78" y="148" width="34" height="140" fill="#00bda5"/><text transform="translate(102 218) rotate(-90)" fill="#fff" font-size="18" font-weight="bold" text-anchor="middle">Bestehend</text>
+<rect x="78" y="292" width="34" height="142" fill="#00bda5"/><text transform="translate(102 363) rotate(-90)" fill="#fff" font-size="18" font-weight="bold" text-anchor="middle">Neu</text>
+<g fill="#eaf0f6"><rect x="116" y="148" width="220" height="140"/><rect x="340" y="148" width="220" height="140"/><rect x="116" y="292" width="220" height="142"/><rect x="340" y="292" width="220" height="142"/></g>
+<g fill="#33475b" font-size="19" font-weight="bold" text-anchor="middle">
+<text x="226" y="212">Marktdurch-</text><text x="226" y="238">dringung</text>
+<text x="450" y="212">Markt-</text><text x="450" y="238">erweiterung</text>
+<text x="226" y="356">Produkt-</text><text x="226" y="382">entwicklung</text>
+<text x="450" y="370">Diversifikation</text></g>
+</svg>
