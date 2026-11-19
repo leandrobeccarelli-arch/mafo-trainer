@@ -125,18 +125,18 @@ t.r.forEach(r=>{const tr=el("tr");r.forEach(x=>tr.append(el("td",null,x)));tb.ap
 /* ---------- Rechentrainer: Aufgaben mit Zufallszahlen ---------- */
 const AGE=["14–25","26–40","41–55","56–65","65+"];
 const CALC={
-vb:{t:"Vertrauensbereich",d:"Zufallsfehler einer Umfrage",s:"Teil 2, Folie 47",g(){
+vb:{h:"Formel: d = t × √(p × q ÷ n)\nt = 2 (Sicherheitsgrad 95.5 %), p = Anteil «Ja» in %, q = 100 − p, n = Anzahl Interviews\nTipp: Zuerst p × q, dann ÷ n, dann Wurzel ziehen, dann × 2. Untere Grenze = p − d, obere Grenze = p + d.\nFolienbeispiel: 2 × √(53 × 47 ÷ 300) = ±5.76",t:"Vertrauensbereich",d:"Zufallsfehler einer Umfrage",s:"Teil 2, Folie 47",g(){
  const n=pk([100,200,300,400,500,625,800,1000,1500,2000]),p=ri(8,92),q=100-p,d=2*Math.sqrt(p*q/n);
  return{q:`In einer Umfrage mit ${N(n)} Interviews antworten ${p} % mit «Ja». Berechnen Sie den Vertrauensbereich bei einem Sicherheitsgrad von 95.5 % (t = 2).`,
  f:[{l:"Vertrauensbereich ±",u:"%",a:d,dp:2,tol:.06},{l:"Untere Grenze",u:"%",a:p-d,tol:.11},{l:"Obere Grenze",u:"%",a:p+d,tol:.11}],
  w:[`p = ${p}, q = 100 − ${p} = ${q}, n = ${N(n)}, t = 2`,`d = t × √(p × q ÷ n) = 2 × √(${p} × ${q} ÷ ${N(n)}) = ±${N(d,2)}`,`Der wahre Wert liegt mit 95.5 % Wahrscheinlichkeit zwischen ${N(p-d,1)} % und ${N(p+d,1)} %.`]}}},
-sig:{t:"Signifikanz",d:"Ist der Unterschied signifikant?",s:"Teil 2, Folie 47",g(){
+sig:{h:"Formel: d = t × √(p × q ÷ n), t = 2\nTipp: Bereich «Ja» = p ± d, Bereich «Nein» = q ± d. Überschneiden sich die beiden Bereiche, liegt kein signifikanter Unterschied vor.\nFolienbeispiel: 53 % (47.2–58.8) und 47 % (41.2–52.8) überschneiden sich → nicht signifikant",t:"Signifikanz",d:"Ist der Unterschied signifikant?",s:"Teil 2, Folie 47",g(){
  let n,p,q,d;do{n=pk([200,300,400,500,800,1000,1500]);p=ri(51,62);q=100-p;d=2*Math.sqrt(p*q/n)}while(Math.abs(p-q-2*d)<.4);
  const sig=p-d>q+d;
  return{q:`Basis: ${N(n)} Interviews. ${p} % sagen «Ja», ${q} % sagen «Nein». Liegt bei einem Sicherheitsgrad von 95.5 % (t = 2) ein signifikanter Unterschied vor?`,
  f:[{l:"Vertrauensbereich ±",u:"%",a:d,dp:2,tol:.06},{l:"Signifikanter Unterschied?",opts:["Ja","Nein"],c:sig?0:1}],
  w:[`d = 2 × √(${p} × ${q} ÷ ${N(n)}) = ±${N(d,2)}`,`«Ja»: ${N(p-d,1)} % bis ${N(p+d,1)} %`,`«Nein»: ${N(q-d,1)} % bis ${N(q+d,1)} %`,sig?"Die beiden Bereiche überschneiden sich nicht: Der Unterschied ist signifikant.":"Die beiden Bereiche überschneiden sich: Es liegt kein signifikanter Unterschied vor."]}}},
-cov:{t:"Panel Coverage",d:"Gesamtmarkt und Abdeckung",s:"Teil 3, Folie 11 · Grundlagentest Aufgabe 3",g(){
+cov:{h:"Gesamtmarkt = Panelmarkt ÷ Coverage × 100\nCoverage = Panelmarkt ÷ Gesamtmarkt × 100\nPanelmarkt = Gesamtmarkt × Coverage ÷ 100\nTipp: Der Gesamtmarkt ist immer grösser als der Panelmarkt, weil kein Panel den ganzen Markt erfasst.\nBeispiel Grundlagentest: 25.3 Mio. ÷ 60 × 100 = 42.2 Mio.",t:"Panel Coverage",d:"Gesamtmarkt und Abdeckung",s:"Teil 3, Folie 11 · Grundlagentest Aufgabe 3",g(){
  const c=ri(40,85,5),v=pk([0,0,1,2]);
  if(v===0){const p=ri(80,950)/10,g=p/c*100;
  return{q:`Der Panelmarkt beträgt CHF ${N(p,1)} Mio. Die Panel Coverage liegt bei ${c} %. Berechnen Sie den Gesamtmarkt.`,
@@ -146,26 +146,26 @@ cov:{t:"Panel Coverage",d:"Gesamtmarkt und Abdeckung",s:"Teil 3, Folie 11 · Gru
  f:[{l:"Coverage",u:"%",a:c,dp:0,tol:.5}],w:[`Coverage = Panelmarkt ÷ Gesamtmarkt × 100`,`${N(p,p%1?1:0)} ÷ ${N(g)} × 100 = ${c} %`]};
  return{q:`Der Gesamtmarkt wird auf CHF ${N(g)} Mio. geschätzt. Die Panel Coverage beträgt ${c} %. Wie gross ist der Panelmarkt?`,
  f:[{l:"Panelmarkt",u:"Mio. CHF",a:p,tol:.06}],w:[`Panelmarkt = Gesamtmarkt × Coverage ÷ 100`,`${N(g)} × ${c} ÷ 100 = CHF ${N(p,p%1?1:0)} Mio.`]}}},
-quo:{t:"Quotenplan",d:"Quoten für die Stichprobe",s:"Teil 2, Folie 24",g(){
+quo:{h:"Quote = n × Anteil Geschlecht × Anteil Alter\nTipp: Prozente als Dezimalzahl rechnen (80 % = 0.8).\nFolienbeispiel: 1'000 × 0.8 × 0.4 = 320 Männer 41–55 Jahre",t:"Quotenplan",d:"Quoten für die Stichprobe",s:"Teil 2, Folie 24",g(){
  const n=pk([1000,2000,3000]),m=pk([40,50,60,70,80]),a=pk([[10,20,40,20,10],[15,25,30,20,10],[20,30,25,15,10],[10,25,30,25,10],[5,20,35,25,15]]);
  const i=ri(0,4);let j=ri(0,4);if(j===i)j=(j+1)%5;
  return{q:`Die Struktur des Universums ist bekannt. Die Stichprobe umfasst n = ${N(n)}. Wie viele Interviews braucht es je Quote?`,
  tb:{cap:"Universum",h:["Merkmal","Anteil"],r:[["Mann",m+" %"],["Frau",(100-m)+" %"],...AGE.map((x,k)=>[x+" Jahre",a[k]+" %"])]},
  f:[{l:`Männer, ${AGE[i]} Jahre`,u:"Interviews",a:n*m*a[i]/1e4,dp:0,tol:.5},{l:`Frauen, ${AGE[j]} Jahre`,u:"Interviews",a:n*(100-m)*a[j]/1e4,dp:0,tol:.5},{l:"Frauen total",u:"Interviews",a:n*(100-m)/100,dp:0,tol:.5}],
  w:[`Quote = n × Anteil Geschlecht × Anteil Alter`,`Männer ${AGE[i]}: ${N(n)} × ${m} % × ${a[i]} % = ${N(n*m*a[i]/1e4)}`,`Frauen ${AGE[j]}: ${N(n)} × ${100-m} % × ${a[j]} % = ${N(n*(100-m)*a[j]/1e4)}`,`Frauen total: ${N(n)} × ${100-m} % = ${N(n*(100-m)/100)}`]}}},
-gew:{t:"Gewichten",d:"Gewichtungsfaktor Soll / Ist",s:"Teil 2, Folie 28",g(){
+gew:{h:"Gewichtungsfaktor = Soll ÷ Ist\nTipp: Faktor über 1 = zu wenige Interviews, werden höher gewichtet. Faktor unter 1 = zu viele Interviews, werden tiefer gewichtet.\nFolienbeispiel: Soll 80, Ist 100 → Faktor 0.8 (100 Interviews × 0.8 = 80)",t:"Gewichten",d:"Gewichtungsfaktor Soll / Ist",s:"Teil 2, Folie 28",g(){
  const c=sh(["Männer 14–25","Frauen 14–25","Männer 26–40","Frauen 26–40","Männer 41–55","Frauen 41–55"]).slice(0,3);
  const x=c.map(()=>{const ist=pk([50,80,100,120,150,200,250]),k=pk([.2,.4,.5,.8,1.2,1.5,1.6,2,2.5,3.2]);return{ist,k,soll:Math.round(ist*k)}});
  return{q:`Die Quoten wurden nicht eingehalten (Ist). Mit welchem Faktor müssen die Interviews gewichtet werden, damit die Stichprobe wieder repräsentativ ist?`,
  tb:{h:["Quote","Soll","Ist"],r:c.map((n,i)=>[n,N(x[i].soll),N(x[i].ist)])},
  f:c.map((n,i)=>({l:n,u:"Faktor",a:x[i].k,dp:2,tol:.011})),
  w:["Gewichtungsfaktor = Soll ÷ Ist",...c.map((n,i)=>`${n}: ${x[i].soll} ÷ ${x[i].ist} = ${N(x[i].k,2)}`)]}}},
-mkz:{t:"Marktkennzahlen",d:"Sättigungsgrad und Penetration",s:"Unterricht 06.05.2026, Folie 1",g(){
+mkz:{h:"Sättigungsgrad = Marktvolumen ÷ Marktpotenzial × 100\nPenetration = Marktvolumen ÷ Anzahl Haushalte × 100\nOffenes Potenzial = Marktpotenzial − Marktvolumen\nFolienbeispiel: 800'000 ÷ 1.6 Mio. = 50 % Sättigung, 800'000 ÷ 4.0 Mio. Haushalte = 20 % Penetration",t:"Marktkennzahlen",d:"Sättigungsgrad und Penetration",s:"Unterricht 06.05.2026, Folie 1",g(){
  const hh=pk([2,3,4,5]),pot=hh*ri(20,60,10)/100,sat=ri(20,80,10),vol=pot*sat/100;
  return{q:`Markt mit ${N(hh,1)} Mio. Haushalten. Das Marktpotenzial beträgt ${N(pot,2)} Mio. Stück, das Marktvolumen ${N(vol*1e6)} Stück.`,
  f:[{l:"Sättigungsgrad",u:"%",a:sat,dp:0,tol:.5},{l:"Penetration",u:"%",a:vol/hh*100,tol:.11},{l:"Noch offenes Potenzial",u:"Stück",a:(pot-vol)*1e6,dp:0,tol:1}],
  w:[`Sättigungsgrad = Marktvolumen ÷ Marktpotenzial × 100 = ${N(vol*1e6)} ÷ ${N(pot*1e6)} × 100 = ${sat} %`,`Penetration = Marktvolumen ÷ Haushalte × 100 = ${N(vol*1e6)} ÷ ${N(hh*1e6)} × 100 = ${N(vol/hh*100,1)} %`,`Offenes Potenzial = Marktpotenzial − Marktvolumen = ${N((pot-vol)*1e6)} Stück`]}}},
-ma:{t:"Marktanteil",d:"Marktanteil, Umsatz, Mehrumsatz",s:"Teil 3, Folie 29 · Grundlagentest Aufgabe 4",g(){
+ma:{h:"Umsatz = Marktvolumen × Marktanteil ÷ 100\nMarktanteil = Umsatz ÷ Marktvolumen × 100\nMehrumsatz = Marktvolumen × (Ziel-Marktanteil − heutiger Marktanteil) ÷ 100\nTipp: Die Differenz der Marktanteile in Prozentpunkten rechnen, dann mit dem Marktvolumen multiplizieren.",t:"Marktanteil",d:"Marktanteil, Umsatz, Mehrumsatz",s:"Teil 3, Folie 29 · Grundlagentest Aufgabe 4",g(){
  const v=pk([0,1,2]),mv=ri(80,900)/10;
  if(v===0){const a=ri(40,320)/10,u=mv*a/100;
  return{q:`Das Marktvolumen beträgt CHF ${N(mv,1)} Mio. Die Marke hat einen Marktanteil von ${N(a,1)} %. Wie hoch ist ihr Umsatz?`,
@@ -176,12 +176,12 @@ ma:{t:"Marktanteil",d:"Marktanteil, Umsatz, Mehrumsatz",s:"Teil 3, Folie 29 · G
  const a=ri(80,140)/10,z=ri(16,24),m=mv*(z-a)/100;
  return{q:`Ein Segment hat ein Marktvolumen von CHF ${N(mv,1)} Mio. Der Marktanteil der Marke soll von ${N(a,1)} % auf ${z} % steigen. Das Marktvolumen bleibt gleich. Wie gross ist der Mehrumsatz?`,
  f:[{l:"Mehrumsatz",u:"Mio. CHF",a:m,dp:2,tol:.06}],w:[`Zuwachs = ${z} % − ${N(a,1)} % = ${N(z-a,1)} Prozentpunkte`,`Mehrumsatz = ${N(mv,1)} × ${N(z-a,1)} ÷ 100 = CHF ${N(m,2)} Mio.`]}}},
-dis:{t:"Distribution",d:"Numerisch, gewichtet, Faktor",s:"Teil 3, Folie 7 · Unterricht 06.05.2026, Folie 2",g(){
+dis:{h:"Numerische Distribution = POS mit dem Produkt ÷ alle POS × 100\nGewichtete Distribution = Kategorienumsatz dieser POS ÷ Marktvolumen × 100\nDistributionsfaktor = gewichtete ÷ numerische Distribution\nTipp: Faktor über 1.0 = Produkt ist in umsatzstarken Geschäften, unter 1.0 = in umsatzschwächeren Geschäften.",t:"Distribution",d:"Numerisch, gewichtet, Faktor",s:"Teil 3, Folie 7 · Unterricht 06.05.2026, Folie 2",g(){
  const pos=ri(2,8)*500,np=ri(20,80,5);let gp;do{gp=ri(20,95,5)}while(gp===np);const mv=ri(10,90),k=pos*np/100,u=mv*gp/100,fa=gp/np,ud=Math.abs(u*10-Math.round(u*10))>1e-9?2:(u%1?1:0);
  return{q:`Im Markt gibt es ${N(pos)} Verkaufsstellen (POS). ${N(k)} davon führen das Produkt. Das Marktvolumen der Kategorie beträgt CHF ${mv} Mio. Die Geschäfte, die das Produkt führen, erzielen davon CHF ${N(u,ud)} Mio.`,
  f:[{l:"Numerische Distribution",u:"%",a:np,dp:0,tol:.5},{l:"Gewichtete Distribution",u:"%",a:gp,dp:0,tol:.5},{l:"Distributionsfaktor",u:"",a:fa,dp:2,tol:.011},{l:"Das Produkt ist eher in …",opts:["umsatzstarken Geschäften","umsatzschwächeren Geschäften"],c:fa>1?0:1}],
  w:[`Numerische Distribution = ${N(k)} ÷ ${N(pos)} × 100 = ${np} %`,`Gewichtete Distribution = ${N(u,ud)} ÷ ${mv} × 100 = ${gp} %`,`Distributionsfaktor = gewichtete ÷ numerische Distribution = ${gp} ÷ ${np} = ${N(fa,2)}`,fa>1?"Über 1.0: Das Produkt ist in umsatzstarken Geschäften vertreten.":"Unter 1.0: Das Produkt ist in umsatzschwächeren Geschäften vertreten."]}}},
-bud:{t:"Budget",d:"Kosten nach Richtpreisen",s:"Teil 2, Folie 6",g(){
+bud:{h:"Budget = Anzahl Interviews × Richtpreis\nAnzahl Interviews = Budget ÷ Richtpreis\nRichtpreise: persönlich CHF 100.–, telefonisch CHF 50.–, schriftlich CHF 30.–, online CHF 30.– pro Interview",t:"Budget",d:"Kosten nach Richtpreisen",s:"Teil 2, Folie 6",g(){
  const M=[["persönliche Interviews (Face to Face)",100],["telefonische Interviews",50],["schriftliche Interviews",30],["Online-Interviews",30]],x=pk(M),n=pk([300,500,625,1000,1500,2000,2500]);
  if(Math.random()<.6)return{q:`Geplant sind ${N(n)} ${x[0]}. Wie hoch ist das Budget nach den Richtkosten der AD-HOC-Forschung?`,
  f:[{l:"Budget",u:"CHF",a:n*x[1],dp:0,tol:1}],w:[`Richtpreis: CHF ${x[1]}.– pro Interview`,`${N(n)} × CHF ${x[1]}.– = CHF ${N(n*x[1])}.–`]};
@@ -197,7 +197,7 @@ const F=el("div","fld"),ins=[];d.f.forEach(f=>{F.append(el("label",null,f.l));co
 if(f.opts){const bs=f.opts.map((o,j)=>{const b=btn(o,"sel",()=>{if(done)return;bs.forEach(x=>x.setAttribute("aria-pressed","false"));b.setAttribute("aria-pressed","true");f.v=j});b.setAttribute("aria-pressed","false");return b});bs.forEach(b=>w.append(b));ins.push(bs)}
 else{const inp=el("input");inp.type="text";inp.inputMode="decimal";inp.autocomplete="off";inp.setAttribute("aria-label",f.l);w.append(inp);if(f.u)w.append(el("span","sub",f.u));ins.push(inp)}
 F.append(w)});c.append(F);let done=false;
-const go=btn("Prüfen","primary",check);c.append(go);const first=ins.find(x=>!Array.isArray(x));if(first)first.focus();
+const hb=btn("Formel und Tipp",null,()=>{hb.remove();gr.after(el("p","ex",C.h))});const go=btn("Prüfen","primary",check);const gr=el("div","row");gr.append(go,hb);c.append(gr);const first=ins.find(x=>!Array.isArray(x));if(first)first.focus();
 keyH=e=>{if(e.key==="Enter"&&!done){e.preventDefault();check()}};
 function check(){if(done)return;done=true;let all=true;
 d.f.forEach((f,k)=>{let ok;if(f.opts){ok=f.v===f.c;ins[k].forEach((b,j)=>{b.disabled=true;if(j===f.c)b.classList.add("right");else if(j===f.v)b.classList.add("wrong")});if(!ok)ins[k][0].parentNode.after(el("div","fix","Richtig: "+f.opts[f.c]))}
@@ -205,7 +205,7 @@ else{const v=num(ins[k].value);ok=!isNaN(v)&&Math.abs(v-Math.abs(f.a))<=f.tol;in
 if(!ok){const x=el("div","fix",`Richtig: ${N(f.a,f.dp==null?1:f.dp)} ${f.u}`);ins[k].parentNode.after(x)}}
 if(!ok)all=false});
 if(all){score++;st.calc[ty]=(st.calc[ty]||0)+1;save()}
-go.remove();c.append(el("h3",null,all?"Richtig · Lösungsweg":"Lösungsweg"),el("p","ex",d.w.join("\n")),src(C.s));
+gr.remove();c.append(el("h3",null,all?"Richtig · Lösungsweg":"Lösungsweg"),el("p","ex",d.w.join("\n")),src(C.s));
 const n=btn(mix?(i+1<total?"Weiter":"Resultat"):"Neue Zahlen","primary",()=>{i++;show()});c.append(n);n.focus();keyH=null}}
 show()}
 
