@@ -326,11 +326,13 @@ const deck=sh(pool(k).filter(d=>!gaps||st.cards[d.q]==="no"));let i=0,ok=0,no=0;
 function show(){if(i>=deck.length){const a=[];if(no)a.push(btn(`Lücken wiederholen (${no})`,"primary",()=>cards(k,true)));
 a.push(btn("Quiz zum Kapitel",no?null:"primary",()=>quiz(k)));return end(`${ok} / ${deck.length}`,"gewusst in dieser Runde",a)}
 prog(i,deck.length);const d=deck[i],c=$("r-card");c.innerHTML="";c.append(el("p","q",d.q));
+const N=st.notes||(st.notes={}),ta=el("textarea");ta.placeholder="Deine Antwort (optional): zuerst selbst aufschreiben, dann aufdecken";ta.setAttribute("aria-label","Deine Antwort");ta.value=N[d.q]||"";ta.oninput=()=>{const v=ta.value.trim();if(v)N[d.q]=ta.value;else delete N[d.q];save()};
+const lb=el("p","sub","Deine Antwort");lb.style.margin="4px 0 6px";c.append(lb,ta);
 const r=el("div","row");r.append(btn("Aufdecken","primary",rev));c.append(r);let open=false;
-function rev(){if(open)return;open=true;r.remove();c.append(el("div","a",d.a));if(d.img){const im=el("img","slide");im.src=d.img;im.alt="Folie: "+d.q;im.loading="lazy";im.onclick=()=>window.open(d.img,"_blank");c.append(im)}if(d.s)c.append(src(d.s));const r2=el("div","row");
+function rev(){if(open)return;open=true;r.remove();const sl=el("p","sub","Lösung");sl.style.margin="16px 0 0";c.append(sl,el("div","a",d.a));if(d.img){const im=el("img","slide");im.src=d.img;im.alt="Folie: "+d.q;im.loading="lazy";im.onclick=()=>window.open(d.img,"_blank");c.append(im)}if(d.s)c.append(src(d.s));const r2=el("div","row");
 r2.append(btn("Gewusst","good",()=>mark("ok")),btn("Nicht gewusst","miss",()=>mark("no")));c.append(r2)}
 function mark(v){st.cards[d.q]=v;save();v==="ok"?ok++:no++;i++;show()}
-keyH=e=>{if(e.code==="Space"){e.preventDefault();rev()}else if(open&&e.key==="ArrowRight")mark("ok");else if(open&&e.key==="ArrowLeft")mark("no")}}
+keyH=e=>{if(e.target&&e.target.tagName==="TEXTAREA")return;if(e.code==="Space"){e.preventDefault();rev()}else if(open&&e.key==="ArrowRight")mark("ok");else if(open&&e.key==="ArrowLeft")mark("no")}}
 show()}
 
 function ask(title,mode,make,id){run(title,mode);keyH=null;const qs=make();let i=0,score=0;const wrong=[];
